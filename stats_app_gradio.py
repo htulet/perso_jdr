@@ -50,4 +50,4 @@ with gr.Blocks(title="Générateur de stats JdR") as demo:
 
     generate_button.click(fn=generate_stats, inputs=[base_pts, base_corps, mode], outputs=output_box)
 
-demo.launch()
+demo.launch(share=True)
