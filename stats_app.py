@@ -1,7 +1,7 @@
 import streamlit as st
 import random as rd
 import numpy as np
-import pandas as pd
+import plotly.graph_objects as go
 
 def reroll_stats(pts_to_reroll, base_stats):
     new_stats = base_stats.copy()
@@ -49,8 +49,30 @@ if st.button("🎲 Générer les stats !"):
     for i in range(len(new_stats)):
         st.write(f"**{CARAC[i]}** : {new_stats[i]}")
 
-    df = pd.DataFrame({
-        'Caractéristique': CARAC,
-        'Valeur': new_stats
-    })
-    st.bar_chart(df.set_index('Caractéristique'))
+    colors = []
+    for val in new_stats:
+        if val >= 15:
+            colors.append("blue")
+        elif val >= 12:
+            colors.append("green")
+        elif val >= 9:
+            colors.append("yellow")
+        elif val >= 6:
+            colors.append("orange")
+        else:
+            colors.append("red")
+
+    # Graphique Plotly
+    fig = go.Figure(go.Bar(
+        x=CARAC,
+        y=new_stats,
+        marker_color=colors
+    ))
+
+    fig.update_layout(
+        yaxis=dict(range=[0,18], title="Valeur"),
+        title="Répartition des statistiques",
+        xaxis_title="Caractéristique"
+    )
+
+    st.plotly_chart(fig)
