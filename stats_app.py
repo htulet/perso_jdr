@@ -49,6 +49,3 @@ if st.button("🎲 Générer les stats !"):
     st.subheader("Résultat :")
     for i in range(len(new_stats)):
         st.write(f"**{CARAC[i]}** : {new_stats[i]}")
-    
-    total = sum(new_stats)
-    st.write(f"**Total des points (hors Corps)** : {total}")
