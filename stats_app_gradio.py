@@ -1,10 +1,9 @@
 import gradio as gr
 import random as rd
-import numpy as np
+import plotly.graph_objects as go
 
 CARAC = ['Force', 'Dextérité', 'Intelligence', 'Présence', 'Perception']
 
-# --- Core logic ---
 def reroll_stats(pts_to_reroll, base_stats):
     new_stats = base_stats.copy()
     for _ in range(pts_to_reroll):
@@ -23,8 +22,8 @@ def reroll_stats_extr(pts_to_reroll, base_stats):
         return reroll_stats_extr(pts_to_reroll, base_stats)
     return new_stats
 
-# --- Function to be called by Gradio ---
-def generate_stats(base_pts, base_corps, mode):
+# Fonction pour générer le graphique
+def generate_stats_chart(base_pts, base_corps, mode):
     pts_to_reroll = base_pts - (base_corps - 2)
     base_stats = [2, 2, 2, 2, 2]
 
@@ -33,20 +32,45 @@ def generate_stats(base_pts, base_corps, mode):
     else:
         new_stats = reroll_stats_extr(pts_to_reroll, base_stats)
 
-    results = "\n".join(f"{CARAC[i]} : {new_stats[i]}" for i in range(len(new_stats)))
-    return results
+    # Couleurs selon valeur
+    colors = []
+    for val in new_stats:
+        if val >= 16:
+            colors.append("blue")
+        elif val >= 12:
+            colors.append("green")
+        elif val >= 9:
+            colors.append("yellow")
+        elif val >= 6:
+            colors.append("orange")
+        else:
+            colors.append("red")
 
-# --- Gradio interface ---
-with gr.Blocks(title="Générateur de stats JdR") as demo:
-    gr.Markdown("## 🎲 Générateur de statistiques JdR\nEntrez vos paramètres puis cliquez sur **Générer**.")
+    fig = go.Figure(go.Bar(
+        x=CARAC,
+        y=new_stats,
+        marker_color=colors
+    ))
+
+    fig.update_layout(
+        yaxis=dict(range=[0,18], title="Valeur"),
+        title="Répartition des statistiques",
+        xaxis_title="Caractéristique"
+    )
+
+    return fig
+
+# --- Interface Gradio ---
+with gr.Blocks() as demo:
+    gr.Markdown("## 🎲 Générateur de statistiques JdR avec graphique coloré")
 
     base_pts = gr.Number(label="Nombre total de points à répartir", value=48)
     base_corps = gr.Number(label="Valeur de Corps", value=10)
     mode = gr.Radio(["Équilibré", "Extrême"], label="Mode de répartition", value="Équilibré")
-    
-    generate_button = gr.Button("Générer les statistiques")
-    output_box = gr.Textbox(label="Résultat", lines=10)
 
-    generate_button.click(fn=generate_stats, inputs=[base_pts, base_corps, mode], outputs=output_box)
+    generate_button = gr.Button("Générer")
+    output_chart = gr.Plot(label="Graphique des statistiques")
+
+    generate_button.click(fn=generate_stats_chart, inputs=[base_pts, base_corps, mode], outputs=output_chart)
 
 demo.launch(share=True)
