@@ -1,0 +1,10 @@
+[server]
+enableCORS = false
+enableXsrfProtection = false
+headless = true
+
+[theme]
+base = "light"
+
+[ui]
+hideTopBar = true
