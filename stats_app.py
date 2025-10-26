@@ -51,7 +51,7 @@ if st.button("🎲 Générer les stats !"):
 
     colors = []
     for val in new_stats:
-        if val >= 15:
+        if val >= 16:
             colors.append("blue")
         elif val >= 12:
             colors.append("green")
