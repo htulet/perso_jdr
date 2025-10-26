@@ -34,7 +34,6 @@ def generate_stats(base_pts, base_corps, mode):
         new_stats = reroll_stats_extr(pts_to_reroll, base_stats)
 
     results = "\n".join(f"{CARAC[i]} : {new_stats[i]}" for i in range(len(new_stats)))
-    results += f"\n\nTotal : {sum(new_stats)} (devrait être {sum(base_stats) + pts_to_reroll})"
     return results
 
 # --- Gradio interface ---
