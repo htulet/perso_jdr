@@ -49,3 +49,10 @@ if st.button("🎲 Générer les stats !"):
     st.subheader("Résultat :")
     for i in range(len(new_stats)):
         st.write(f"**{CARAC[i]}** : {new_stats[i]}")
+
+    import pandas as pd
+    df = pd.DataFrame({
+        'Caractéristique': CARAC,
+        'Valeur': new_stats
+    })
+    st.bar_chart(df.set_index('Caractéristique'))
